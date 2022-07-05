@@ -6,7 +6,7 @@ const os = require('os')
 
 const repoDir = path.dirname(__dirname)
 const denoDir = path.join(repoDir, 'deno')
-const npmDir = path.join(repoDir, 'npm', 'esbuild')
+let npmDir = path.join(repoDir, 'npm', 'esbuild-for-imba')
 const version = fs.readFileSync(path.join(repoDir, 'version.txt'), 'utf8').trim()
 const nodeTarget = 'node10'; // See: https://nodejs.org/en/about/releases/
 const umdBrowserTarget = 'es2015'; // Transpiles "async"
@@ -107,7 +107,7 @@ function generateWorkerCode({ esbuildPath, wasm_exec_js, minify, target }) {
 
 exports.buildWasmLib = async (esbuildPath) => {
   // Asynchronously start building the WebAssembly module
-  const npmWasmDir = path.join(repoDir, 'npm', 'esbuild-wasm')
+  let npmWasmDir = path.join(repoDir, 'npm', 'esbuild-wasm-for-imba')
   const goBuildPromise = new Promise((resolve, reject) => childProcess.execFile('go',
     [
       'build',
@@ -210,7 +210,7 @@ module.exports = ${JSON.stringify(exit0Map, null, 2)};
 
   // Also copy this into the WebAssembly shim directories
   for (const dir of [
-    path.join(repoDir, 'npm', 'esbuild-android-64'),
+    path.join(repoDir, 'npm', 'esbuild-android-64-for-imba'),
   ]) {
     fs.mkdirSync(path.join(dir, 'bin'), { recursive: true })
     fs.writeFileSync(path.join(dir, 'wasm_exec.js'), wasm_exec_js);

@@ -271,6 +271,31 @@ platform-all:
 		platform-windows \
 		platform-windows-32 \
 		platform-windows-arm64
+platform-all-for-imba:
+	@$(MAKE) --no-print-directory -j4 \
+		platform-android-for-imba \
+		platform-android-arm64-for-imba \
+		platform-darwin-for-imba \
+		platform-darwin-arm64-for-imba \
+		# platform-deno-for-imba \
+		platform-freebsd-for-imba \
+		platform-freebsd-arm64-for-imba \
+		platform-linux-for-imba \
+		platform-linux-32-for-imba \
+		platform-linux-arm-for-imba \
+		platform-linux-arm64-for-imba \
+		platform-linux-mips64le-for-imba \
+		platform-linux-ppc64le-for-imba \
+		platform-linux-riscv64-for-imba \
+		platform-linux-s390x-for-imba \
+		platform-netbsd-for-imba \
+		platform-neutral-for-imba \
+		platform-openbsd-for-imba \
+		platform-sunos-for-imba \
+		platform-wasm-for-imba \
+		platform-windows-for-imba \
+		platform-windows-32-for-imba \
+		platform-windows-arm64-for-imba
 
 platform-windows: version-go
 	node scripts/esbuild.js npm/esbuild-windows-64/package.json --version
@@ -352,6 +377,117 @@ platform-neutral: esbuild
 
 platform-deno: platform-wasm
 	node scripts/esbuild.js ./esbuild --deno
+
+
+platform-windows-for-imba: version-go
+	node scripts/esbuild.js npm/esbuild-windows-64-for-imba/package.json --version
+	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build $(GO_FLAGS) -o npm/esbuild-windows-64-for-imba/esbuild.exe ./cmd/esbuild
+
+platform-windows-32-for-imba: version-go
+	node scripts/esbuild.js npm/esbuild-windows-32-for-imba/package.json --version
+	CGO_ENABLED=0 GOOS=windows GOARCH=386 go build $(GO_FLAGS) -o npm/esbuild-windows-32-for-imba/esbuild.exe ./cmd/esbuild
+
+platform-windows-arm64-for-imba: version-go
+	node scripts/esbuild.js npm/esbuild-windows-arm64-for-imba/package.json --version
+	CGO_ENABLED=0 GOOS=windows GOARCH=arm64 go build $(GO_FLAGS) -o npm/esbuild-windows-arm64-for-imba/esbuild.exe ./cmd/esbuild
+
+platform-unixlike-for-imba: version-go
+	@test -n "$(GOOS)" || (echo "The environment variable GOOS must be provided" && false)
+	@test -n "$(GOARCH)" || (echo "The environment variable GOARCH must be provided" && false)
+	@test -n "$(NPMDIR)" || (echo "The environment variable NPMDIR must be provided" && false)
+	node scripts/esbuild.js "$(NPMDIR)/package.json" --version
+	CGO_ENABLED=0 GOOS="$(GOOS)" GOARCH="$(GOARCH)" go build $(GO_FLAGS) -o "$(NPMDIR)/bin/esbuild" ./cmd/esbuild
+
+platform-android-for-imba: platform-wasm-for-imba
+	node scripts/esbuild.js npm/esbuild-android-64-for-imba/package.json --version
+
+platform-android-arm64-for-imba:
+	@$(MAKE) --no-print-directory GOOS=android GOARCH=arm64 NPMDIR=npm/esbuild-android-arm64-for-imba platform-unixlike
+
+platform-darwin-for-imba:
+	@$(MAKE) --no-print-directory GOOS=darwin GOARCH=amd64 NPMDIR=npm/esbuild-darwin-64-for-imba platform-unixlike
+
+platform-darwin-arm64-for-imba:
+	@$(MAKE) --no-print-directory GOOS=darwin GOARCH=arm64 NPMDIR=npm/esbuild-darwin-arm64-for-imba platform-unixlike
+
+platform-freebsd-for-imba:
+	@$(MAKE) --no-print-directory GOOS=freebsd GOARCH=amd64 NPMDIR=npm/esbuild-freebsd-64-for-imba platform-unixlike
+
+platform-freebsd-arm64-for-imba:
+	@$(MAKE) --no-print-directory GOOS=freebsd GOARCH=arm64 NPMDIR=npm/esbuild-freebsd-arm64-for-imba platform-unixlike
+
+platform-netbsd-for-imba:
+	@$(MAKE) --no-print-directory GOOS=netbsd GOARCH=amd64 NPMDIR=npm/esbuild-netbsd-64-for-imba platform-unixlike
+
+platform-openbsd-for-imba:
+	@$(MAKE) --no-print-directory GOOS=openbsd GOARCH=amd64 NPMDIR=npm/esbuild-openbsd-64-for-imba platform-unixlike
+
+platform-linux-for-imba:
+	@$(MAKE) --no-print-directory GOOS=linux GOARCH=amd64 NPMDIR=npm/esbuild-linux-64-for-imba platform-unixlike
+
+platform-linux-32-for-imba:
+	@$(MAKE) --no-print-directory GOOS=linux GOARCH=386 NPMDIR=npm/esbuild-linux-32-for-imba platform-unixlike
+
+platform-linux-arm-for-imba:
+	@$(MAKE) --no-print-directory GOOS=linux GOARCH=arm NPMDIR=npm/esbuild-linux-arm-for-imba platform-unixlike
+
+platform-linux-arm64-for-imba:
+	@$(MAKE) --no-print-directory GOOS=linux GOARCH=arm64 NPMDIR=npm/esbuild-linux-arm64-for-imba platform-unixlike
+
+platform-linux-mips64le-for-imba:
+	@$(MAKE) --no-print-directory GOOS=linux GOARCH=mips64le NPMDIR=npm/esbuild-linux-mips64le-for-imba platform-unixlike
+
+platform-linux-ppc64le-for-imba:
+	@$(MAKE) --no-print-directory GOOS=linux GOARCH=ppc64le NPMDIR=npm/esbuild-linux-ppc64le-for-imba platform-unixlike
+
+platform-linux-riscv64-for-imba:
+	@$(MAKE) --no-print-directory GOOS=linux GOARCH=riscv64 NPMDIR=npm/esbuild-linux-riscv64-for-imba platform-unixlike
+
+platform-linux-s390x-for-imba:
+	@$(MAKE) --no-print-directory GOOS=linux GOARCH=s390x NPMDIR=npm/esbuild-linux-s390x-for-imba platform-unixlike
+
+platform-sunos-for-imba:
+	@$(MAKE) --no-print-directory GOOS=illumos GOARCH=amd64 NPMDIR=npm/esbuild-sunos-64-for-imba platform-unixlike
+
+platform-wasm-for-imba: esbuild
+	node scripts/esbuild.js npm/esbuild-wasm-for-imba/package.json --version
+	node scripts/esbuild.js ./esbuild --wasm
+
+platform-neutral-for-imba: esbuild
+	node scripts/esbuild.js npm/esbuild-for-imba/package.json --version
+	node scripts/esbuild.js ./esbuild --neutral
+
+publish-for-imba: check-go-version
+	@$(MAKE) --no-print-directory platform-all-for-imba
+	$(MAKE) --no-print-directory -j4 \
+		publish-windows-for-imba \
+		publish-windows-32-for-imba \
+		publish-windows-arm64-for-imba \
+		publish-sunos-for-imba
+	$(MAKE) --no-print-directory -j4 \
+		publish-freebsd-for-imba \
+		publish-freebsd-arm64-for-imba \
+		publish-openbsd-for-imba \
+		publish-netbsd-for-imba
+	$(MAKE) --no-print-directory -j4 \
+		publish-android-for-imba \
+		publish-android-arm64-for-imba \
+		publish-darwin-for-imba \
+		publish-darwin-arm64-for-imba
+	$(MAKE) --no-print-directory -j4 \
+		publish-linux-for-imba \
+		publish-linux-32-for-imba \
+		publish-linux-arm-for-imba \
+		publish-linux-riscv64-for-imba
+	$(MAKE) --no-print-directory -j4 \
+		publish-linux-arm64-for-imba \
+		publish-linux-mips64le-for-imba \
+		publish-linux-ppc64le-for-imba \
+		publish-linux-s390x-for-imba
+	$(MAKE) --no-print-directory -j4 \
+		publish-neutral-for-imba \
+		# publish-deno-for-imba \
+		publish-wasm-for-imba
 
 publish-all: check-go-version
 	@npm --version > /dev/null || (echo "The 'npm' command must be in your path to publish" && false)
@@ -494,6 +630,73 @@ publish-deno:
 	cd deno && git tag "v$(ESBUILD_VERSION)"
 	cd deno && git push origin main "v$(ESBUILD_VERSION)"
 
+
+publish-windows-for-imba: platform-windows-for-imba
+	cd npm/esbuild-windows-64-for-imba && npm publish 
+
+publish-windows-32-for-imba: platform-windows-32-for-imba
+	cd npm/esbuild-windows-32-for-imba && npm publish 
+
+publish-windows-arm64-for-imba: platform-windows-arm64-for-imba
+	cd npm/esbuild-windows-arm64-for-imba && npm publish 
+
+publish-android-for-imba: platform-android-for-imba
+	cd npm/esbuild-android-64-for-imba && npm publish 
+
+publish-android-arm64-for-imba: platform-android-arm64-for-imba
+	cd npm/esbuild-android-arm64-for-imba && npm publish 
+
+publish-darwin-for-imba: platform-darwin-for-imba
+	cd npm/esbuild-darwin-64-for-imba && npm publish 
+
+publish-darwin-arm64-for-imba: platform-darwin-arm64-for-imba
+	cd npm/esbuild-darwin-arm64-for-imba && npm publish 
+
+publish-freebsd-for-imba: platform-freebsd-for-imba
+	cd npm/esbuild-freebsd-64-for-imba && npm publish 
+
+publish-freebsd-arm64-for-imba: platform-freebsd-arm64-for-imba
+	cd npm/esbuild-freebsd-arm64-for-imba && npm publish 
+
+publish-netbsd-for-imba: platform-netbsd-for-imba
+	cd npm/esbuild-netbsd-64-for-imba && npm publish 
+
+publish-openbsd-for-imba: platform-openbsd-for-imba
+	cd npm/esbuild-openbsd-64-for-imba && npm publish 
+
+publish-linux-for-imba: platform-linux-for-imba
+	cd npm/esbuild-linux-64-for-imba && npm publish 
+
+publish-linux-32-for-imba: platform-linux-32-for-imba
+	cd npm/esbuild-linux-32-for-imba && npm publish 
+
+publish-linux-arm-for-imba: platform-linux-arm-for-imba
+	cd npm/esbuild-linux-arm-for-imba && npm publish 
+
+publish-linux-arm64-for-imba: platform-linux-arm64-for-imba
+	cd npm/esbuild-linux-arm64-for-imba && npm publish 
+
+publish-linux-mips64le-for-imba: platform-linux-mips64le-for-imba
+	cd npm/esbuild-linux-mips64le-for-imba && npm publish 
+
+publish-linux-ppc64le-for-imba: platform-linux-ppc64le-for-imba
+	cd npm/esbuild-linux-ppc64le-for-imba && npm publish 
+
+publish-linux-riscv64-for-imba: platform-linux-riscv64-for-imba
+	cd npm/esbuild-linux-riscv64-for-imba && npm publish 
+
+publish-linux-s390x-for-imba: platform-linux-s390x-for-imba
+	cd npm/esbuild-linux-s390x-for-imba && npm publish 
+
+publish-sunos-for-imba: platform-sunos-for-imba
+	cd npm/esbuild-sunos-64-for-imba && npm publish 
+
+publish-wasm-for-imba: platform-wasm-for-imba
+	cd npm/esbuild-wasm-for-imba && npm publish 
+
+publish-neutral-for-imba: platform-neutral-for-imba
+	cd npm/esbuild-for-imba && npm publish 
+
 validate-build:
 	@test -n "$(TARGET)" || (echo "The environment variable TARGET must be provided" && false)
 	@test -n "$(PACKAGE)" || (echo "The environment variable PACKAGE must be provided" && false)
@@ -535,33 +738,33 @@ validate-builds:
 
 clean:
 	rm -f esbuild
-	rm -f npm/esbuild-windows-32/esbuild.exe
-	rm -f npm/esbuild-windows-64/esbuild.exe
-	rm -f npm/esbuild-windows-arm64/esbuild.exe
-	rm -rf npm/esbuild-android-64/bin
-	rm -rf npm/esbuild-android-64/esbuild.wasm npm/esbuild-android-64/wasm_exec.js npm/esbuild-android-64/exit0.js
-	rm -rf npm/esbuild-android-arm64/bin
-	rm -rf npm/esbuild-darwin-64/bin
-	rm -rf npm/esbuild-darwin-arm64/bin
-	rm -rf npm/esbuild-freebsd-64/bin
-	rm -rf npm/esbuild-freebsd-amd64/bin
-	rm -rf npm/esbuild-linux-32/bin
-	rm -rf npm/esbuild-linux-64/bin
-	rm -rf npm/esbuild-linux-arm/bin
-	rm -rf npm/esbuild-linux-arm64/bin
-	rm -rf npm/esbuild-linux-mips64le/bin
-	rm -rf npm/esbuild-linux-ppc64le/bin
-	rm -rf npm/esbuild-linux-riscv64/bin
-	rm -rf npm/esbuild-linux-s390x/bin
-	rm -rf npm/esbuild-netbsd-64/bin
-	rm -rf npm/esbuild-openbsd-64/bin
-	rm -rf npm/esbuild-sunos-64/bin
-	rm -rf npm/esbuild/bin
-	rm -f npm/esbuild-wasm/esbuild.wasm npm/esbuild-wasm/wasm_exec.js npm/esbuild-wasm/exit0.js
-	rm -f npm/esbuild/install.js
-	rm -rf npm/esbuild/lib
-	rm -rf npm/esbuild-wasm/esm
-	rm -rf npm/esbuild-wasm/lib
+	rm -f npm/esbuild-windows-32-for-imba/esbuild.exe
+	rm -f npm/esbuild-windows-64-for-imba/esbuild.exe
+	rm -f npm/esbuild-windows-arm64-for-imba/esbuild.exe
+	rm -rf npm/esbuild-android-64-for-imba/bin
+	rm -rf npm/esbuild-android-64-for-imba/esbuild.wasm npm/esbuild-android-64-for-imba/wasm_exec.js npm/esbuild-android-64-for-imba/exit0.js
+	rm -rf npm/esbuild-android-arm64-for-imba/bin
+	rm -rf npm/esbuild-darwin-64-for-imba/bin
+	rm -rf npm/esbuild-darwin-arm64-for-imba/bin
+	rm -rf npm/esbuild-freebsd-64-for-imba/bin
+	rm -rf npm/esbuild-freebsd-amd64-for-imba/bin
+	rm -rf npm/esbuild-linux-32-for-imba/bin
+	rm -rf npm/esbuild-linux-64-for-imba/bin
+	rm -rf npm/esbuild-linux-arm-for-imba/bin
+	rm -rf npm/esbuild-linux-arm64-for-imba/bin
+	rm -rf npm/esbuild-linux-mips64le-for-imba/bin
+	rm -rf npm/esbuild-linux-ppc64le-for-imba/bin
+	rm -rf npm/esbuild-linux-riscv64-for-imba/bin
+	rm -rf npm/esbuild-linux-s390x-for-imba/bin
+	rm -rf npm/esbuild-netbsd-64-for-imba/bin
+	rm -rf npm/esbuild-openbsd-64-for-imba/bin
+	rm -rf npm/esbuild-sunos-64-for-imba/bin
+	rm -rf npm/esbuild-for-imba/bin
+	rm -f npm/esbuild-wasm-for-imba/esbuild.wasm npm/esbuild-wasm-for-imba/wasm_exec.js npm/esbuild-wasm-for-imba/exit0.js
+	rm -f npm/esbuild-for-imba/install.js
+	rm -rf npm/esbuild-for-imba/lib
+	rm -rf npm/esbuild-wasm-for-imba/esm
+	rm -rf npm/esbuild-wasm-for-imba/lib
 	rm -rf require/*/bench/
 	rm -rf require/*/demo/
 	rm -rf require/*/node_modules/

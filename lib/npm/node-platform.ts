@@ -14,26 +14,26 @@ export const knownWindowsPackages: Record<string, string> = {
 };
 
 export const knownUnixlikePackages: Record<string, string> = {
-  'android arm64 LE': 'esbuild-android-arm64',
-  'darwin arm64 LE': 'esbuild-darwin-arm64',
-  'darwin x64 LE': 'esbuild-darwin-64',
-  'freebsd arm64 LE': 'esbuild-freebsd-arm64',
-  'freebsd x64 LE': 'esbuild-freebsd-64',
-  'linux arm LE': 'esbuild-linux-arm',
-  'linux arm64 LE': 'esbuild-linux-arm64',
-  'linux ia32 LE': 'esbuild-linux-32',
-  'linux mips64el LE': 'esbuild-linux-mips64le',
-  'linux ppc64 LE': 'esbuild-linux-ppc64le',
-  'linux riscv64 LE': 'esbuild-linux-riscv64',
-  'linux s390x BE': 'esbuild-linux-s390x',
-  'linux x64 LE': 'esbuild-linux-64',
-  'netbsd x64 LE': 'esbuild-netbsd-64',
-  'openbsd x64 LE': 'esbuild-openbsd-64',
-  'sunos x64 LE': 'esbuild-sunos-64',
+  'android arm64 LE': 'esbuild-android-arm64-for-imba',
+  'darwin arm64 LE': 'esbuild-darwin-arm64-for-imba',
+  'darwin x64 LE': 'esbuild-darwin-64-for-imba',
+  'freebsd arm64 LE': 'esbuild-freebsd-arm64-for-imba',
+  'freebsd x64 LE': 'esbuild-freebsd-64-for-imba',
+  'linux arm LE': 'esbuild-linux-arm-for-imba',
+  'linux arm64 LE': 'esbuild-linux-arm64-for-imba',
+  'linux ia32 LE': 'esbuild-linux-32-for-imba',
+  'linux mips64el LE': 'esbuild-linux-mips64le-for-imba',
+  'linux ppc64 LE': 'esbuild-linux-ppc64le-for-imba',
+  'linux riscv64 LE': 'esbuild-linux-riscv64-for-imba',
+  'linux s390x BE': 'esbuild-linux-s390x-for-imba',
+  'linux x64 LE': 'esbuild-linux-64-for-imba',
+  'netbsd x64 LE': 'esbuild-netbsd-64-for-imba',
+  'openbsd x64 LE': 'esbuild-openbsd-64-for-imba',
+  'sunos x64 LE': 'esbuild-sunos-64-for-imba',
 };
 
 export const knownWebAssemblyFallbackPackages: Record<string, string> = {
-  'android x64 LE': 'esbuild-android-64',
+  'android x64 LE': 'esbuild-android-64-for-imba',
 };
 
 export function pkgAndSubpathForCurrentPlatform(): { pkg: string, subpath: string, isWASM: boolean } {
@@ -66,7 +66,7 @@ export function pkgAndSubpathForCurrentPlatform(): { pkg: string, subpath: strin
 }
 
 function pkgForSomeOtherPlatform(): string | null {
-  const libMainJS = require.resolve('esbuild');
+  const libMainJS = require.resolve('esbuild-for-imba');
   const nodeModulesDirectory = path.dirname(path.dirname(path.dirname(libMainJS)));
 
   if (path.basename(nodeModulesDirectory) === 'node_modules') {
@@ -91,7 +91,7 @@ function pkgForSomeOtherPlatform(): string | null {
 }
 
 export function downloadedBinPath(pkg: string, subpath: string): string {
-  const esbuildLibDir = path.dirname(require.resolve('esbuild'));
+  const esbuildLibDir = path.dirname(require.resolve('esbuild-for-imba'));
   return path.join(esbuildLibDir, `downloaded-${pkg}-${path.basename(subpath)}`);
 }
 
@@ -185,7 +185,7 @@ by esbuild to install the correct binary executable for your current platform.`)
   } catch (e) {
   }
   if (isYarnPnP) {
-    const esbuildLibDir = path.dirname(require.resolve('esbuild'));
+    const esbuildLibDir = path.dirname(require.resolve('esbuild-for-imba'));
     const binTargetPath = path.join(esbuildLibDir, `pnpapi-${pkg}-${path.basename(subpath)}`);
     if (!fs.existsSync(binTargetPath)) {
       fs.copyFileSync(binPath, binTargetPath);
