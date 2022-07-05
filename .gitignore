@@ -26,4 +26,3 @@
 bin
 esbuild.exe
 node_modules/
-/**/bin/esbuild
